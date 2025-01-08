@@ -1,0 +1,42 @@
+
+spring:
+  main:
+    allow-circular-references: true
+  mvc:
+    path-match:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:mysql://localhost:3306/gestionbibliotheques?createDatabaseIfNotExist=true&UserSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTime=UTC
+#    url: jdbc:mysql://sql6.freesqldatabase.com:3306/sql6687105?createDatabaseIfNotExist=true&UserSSL=false&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTime=UTC
+#    username: sql6687105
+#    password: "xr6BFMdZG3"
+    password: Jesus/77*7
+    username: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database: MYSQL
+    show-sql: true
+
+    hibernate:
+      ddl-auto: update
+      dialect: org.hibernate.dialect.MySQL5Dialect
+flickr:
+  apiKey: b3d0424197257f8e963afe31e9b33371
+  apiSecret: addd71dc391bb2bc
+  appKey: 72157720888760418-eb0edb578dcbb19d
+  appSecret: f5448ecc1e463713
+
+server:
+  port: 8081
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${EUREKA_SERVICE_URL:http://localhost:5000}/eureka/
+
+signing:
+  key: hufkhjbdszp$$kl$@jhjkhkkk

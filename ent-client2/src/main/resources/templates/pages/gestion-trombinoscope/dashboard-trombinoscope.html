@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Gestion des Horaires</title>
+  <!-- plugins:css -->
+  <link rel="stylesheet" href="../../vendors/feather/feather.css">
+  <link rel="stylesheet" href="../../vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="../../vendors/css/vendor.bundle.base.css">
+  <!-- endinject -->
+  <!-- Plugin css for this page -->
+  <link href="../../vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../../vendors/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="../../vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+  <link rel="stylesheet" href="../../vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" type="../../text/css" href="js/select.dataTables.min.css">
+  <!-- End plugin css for this page -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="../../css/vertical-layout-light/style.css">
+  <!-- endinject -->
+  <link rel="shortcut icon" href="../../images/favicon.png" />
+</head>
+
+<body>
+
+  <head>
+    <!-- Required meta tags -->
+    <th:block th:replace="fragments/_head.html::head"></th:block>
+    <!--  <th:block th:replace="fragments/_modalsIntervention.html::modalsIntervention"></th:block>-->
+
+  </head>
+  <div class="container-scroller">
+
+    <!--_header-->
+    <th:block th:replace="/fragments/_header.html::header"></th:block>
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+      <div class="theme-setting-wrapper">
+        <div id="settings-trigger"><i class="ti-settings"></i></div>
+        <div id="theme-settings" class="settings-panel">
+          <i class="settings-close ti-close"></i>
+          <p class="settings-heading">SIDEBAR SKINS</p>
+          <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+            <div class="img-ss rounded-circle bg-light border mr-3"></div>Light
+          </div>
+          <div class="sidebar-bg-options" id="sidebar-dark-theme">
+            <div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark
+          </div>
+          <p class="settings-heading mt-2">HEADER SKINS</p>
+          <div class="color-tiles mx-0 px-4">
+            <div class="tiles success"></div>
+            <div class="tiles warning"></div>
+            <div class="tiles danger"></div>
+            <div class="tiles info"></div>
+            <div class="tiles dark"></div>
+            <div class="tiles default"></div>
+          </div>
+        </div>
+      </div>
+      <!-- partial -->
+
+      <!-- partial -->
+      <!-- partial:partials/_sidebar.html -->
+      <th:block th:replace="/fragments/_navTrombinoscope.html::navTrombinoscope"></th:block>
+      <div class="main-panel">
+
+        <div class="content-wrapper">
+          <div class="accordion mb-4" id="accordionExample">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed bg-primary fw-bold text-white" type="button"
+                  data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false"
+                  aria-controls="collapseTwo">
+                  FILTREZ LES INFORMATIONS DES UTILISATEURS
+                </button>
+              </h2>
+
+              <div id="collapseTwo" class="accordion-collapse collapse show  text-dark" aria-labelledby="headingTwo"
+                data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                  <div class="row">
+                    <div class="form-group row mx-auto">
+                      <div class="col-md-4" id="population-section">
+                        <label for="population-class">Population</label>
+                        <select class="form-control form-control-sm" id="population-class"
+                          onchange="updatePopulation()">
+                          <option>Personnel</option>
+                          <option>Etudiant</option>
+                          <option>Enseignant</option>
+                          <option value="*" selected>Tous</option>
+                        </select>
+                      </div>
+
+                      <div class="col-md-4" id="nom-section">
+                        <label for="nom-class" id="nom-utilisateur">Nom Utilisateur</label>
+                        <input type="text" class="form-control form-control-sm" id="nom-class"
+                          placeholder="Filtrez en fonction du nom...">
+                      </div>
+
+                      <div class="col-md-4" id="prenom-section">
+                        <label for="prenom-class" id="prenom-utilisateur">Prénom Utilisateur</label>
+                        <input type="text" class="form-control form-control-sm" id="prenom-class"
+                          placeholder="Filtrez en fonction du prénom...">
+                      </div>
+                    </div>
+
+
+                    <div class="form-group row mx-auto">
+                      <span id="etudiant-filter" class="row d-none">
+
+                        <div class="col-md-2" id="cycle-section">
+                          <label for="cycle-class">Cycle</label>
+                          <select class="form-control form-control-sm" id="cycle-class" onchange="updateCycle()">
+                            <option value="*" selected>Tous</option>
+                          </select>
+                        </div>
+
+
+                        <div class="col-md-2" id="niveau-etude-section">
+                          <label for="niveau-etude-class">Niveau Etude</label>
+                          <select class="form-control form-control-sm" id="niveau-etude-class"
+                            onchange="updateNiveauEtude()">
+                            <option value="*" selected>Tous</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4" id="specialite-section">
+                          <label for="specialite-class" id="specialite-utilisateur">Specialite Etudiant</label>
+                          <select class="form-control form-control-sm" id="specialite-class"
+                            onchange="updateSpecialite()">
+                            <option value="*" selected>Tous</option>
+                          </select>
+                        </div>
+
+                        <div class="col-md-4" id="section-section">
+                          <label for="section-class" id="section-utilisateur">Sexe</label>
+                          <select class="form-control form-control-sm" id="section-sexe-class" onchange="updateSexe()">
+                            <option value="MASCULIN">Masculin</option>
+                            <option value="FEMININ">Feminin</option>
+                            <option value="*" selected>Tous</option>
+                          </select>
+                        </div>
+                      </span>
+
+
+                      <span id="personnel-filter" class="row d-none">
+                        <div class="col-md-4" id="prenom-section">
+                          <label for="role-personnel-class" id="prenom-utilisateur">Role du Personnel</label>
+                          <select class="form-control form-control-sm" id="role-personnel-class">
+                            <option value="*" selected>Tous</option>
+                          </select>
+                        </div>
+
+
+                        <div class="col-md-4" id="prenom-section">
+                          <label for="role-personnel-class" id="prenom-utilisateur">Adresse du Personnel</label>
+                          <input type="text" class="form-control form-control-sm" id="adresse-personnel-class"
+                            placeholder="Filtrez en fonction de l'adresse du personnel...">
+                        </div>
+
+                        <!-- <div class="col-md-12" id="role-section">
+                          <select class="form-control form-control-sm" id="role-class" onchange="updateRole()">
+                            <option selected>Selectionnez le role de ce personnel</option>
+                            <option>Anglophone</option>
+                            <option>Francophone</option>
+                            <option value="*" selected>Tous</option>
+                          </select>
+                        </div> -->
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- <div class="container-fluid"> -->
+          <!-- <div class="main-body">
+              <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 gutters-sm">
+               
+                <span id="user-container" class="col"></span>
+
+              </div>
+              <div id="pagination-container" class="d-flex justify-content-center mt-4"></div>
+
+            </div>
+          </div> -->
+
+          <div class="container-fluid">
+            <div class="main-body">
+              <div class="row">
+                <span id="user-container"
+                  class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 gutters-sm "></span>
+              </div>
+              <div id="pagination-container" class="d-flex justify-content-center mt-4 fixed-bottom p-3"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+          aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header text-white fw-bold bg-primary">
+                <h5 class="modal-title">INFORMATIONS DE L'ETUDIANT : </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+
+              <div class="modal-body">
+                <div class="row">
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Noms : <span class="float-end fw-bold mr-5" id="nom">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Prenoms : <span class="float-end fw-bold mr-5" id="prenom">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Matricule : <span class="float-end fw-bold mr-5" id="matricule">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Ecole D'origine : <span class="float-end fw-bold mr-5" id="ecoleOrigine">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Date de Naissance : <span class="float-end fw-bold mr-5" id="dateNaissance">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Lieu de de Naissance : <span class="float-end fw-bold mr-5" id="lieuNaissance">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Telephone : <span class="float-end fw-bold mr-5" id="telephone">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Email : <span class="float-end fw-bold mr-5" id="email">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Region D'origine : <span class="float-end fw-bold mr-5" id="regionOrigine">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Sexe : <span class="float-end fw-bold mr-5" id="sexe">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Cycle : <span class="float-end fw-bold mr-5" id="cycle">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Niveau d'Etudes : <span class="float-end fw-bold mr-5" id="niveau">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Specialite : <span class="float-end fw-bold mr-5" id="specialite">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Statut Compte : <span class="float-end fw-bold mr-5" id="statut">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Nom du Pere : <span class="float-end fw-bold mr-5" id="nomDuPere">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Telephone de Pere : <span class="float-end fw-bold mr-5" id="telephoneDuPere">lsl</span>
+                  </div>
+
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Nom de la Mere : <span class="float-end fw-bold mr-5" id="nomDeLaMere">lsl</span>
+                  </div>
+                  <div class="col-md-6 col-sm-12 mb-3">
+                    Telephone de la Mere : <span class="float-end fw-bold mr-5" id="telephoneDeLaMere">lsl</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- main-panel ends -->
+  </div>
+  </div>
+  <!-- container-scroller -->
+
+
+  <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        ...
+      </div>
+    </div>
+  </div>
+
+  <!-- plugins:js -->
+  <script src="../../vendors/js/vendor.bundle.base.js"></script>
+  <script src="../../vendors/bootstrap/js/bootstrap.min.js"></script>
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <!-- End plugin js for this page -->
+  <!-- inject:js -->
+  <script src="../../js/off-canvas.js"></script>
+  <script src="../../js/hoverable-collapse.js"></script>
+  <script src="../../js/template.js"></script>
+  <script src="../../js/settings.js"></script>
+  <script src="../../js/todolist.js"></script>
+
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <!-- End custom js for this page-->
+
+
+
+  <!-- plugins:js -->
+  <!-- endinject -->
+  <!-- Plugin js for this page -->
+  <script src="../../vendors/chart.js/Chart.min.js"></script>
+  <script src="../../vendors/datatables.net/jquery.dataTables.js"></script>
+  <script src="../../vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+  <script src="js/dataTables.select.min.js"></script>
+  <!-- Include twbs-pagination library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twbs-pagination/1.4.2/jquery.twbsPagination.min.js"></script>
+
+
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+  <script src="../../js/dashboard.js"></script>
+  <script src="../../js/Chart.roundedBarCharts.js"></script>
+  <script>
+    const itemsPerPage = 8;
+    let currentPage = 1;
+    let etudiants = []; // Assurez-vous que cette variable est définie en dehors de toute fonction pour être accessible globalement.
+
+    // Function to display users based on the current page
+    function displayUsers(data) {
+      const userContainer = $('#user-container');
+      userContainer.empty();
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+
+      for (let i = startIndex; i < endIndex && i < data.length; i++) {
+        const user = data[i];
+
+        const card = $(`
+          <div class="col p-3 row mx-auto" data-toggle="modal" data-target=".bd-example-modal-lg" onclick="getEtudiantParMatricule('${user.matricule}')">
+            <div class="card mt-5">
+              <div class="card-body text-center">
+                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" style="width:100px;margin-top:-65px" alt="${user.name}" class="img-fluid img-thumbnail rounded-circle border-0 mb-3">
+                <h5 class="card-title">Matricule : ${user.matricule}</h5>
+                <p class="text-secondary mb-1">Noms : ${user.nom}</p>
+                <p class="text-muted font-size-sm">Prenoms : ${user.prenom}</p>
+              </div>
+            </div>
+          </div>
+        `);
+
+        userContainer.append(card);
+      }
+    }
+
+
+    function getEtudiantParMatricule(matriculeRecherche) {
+      for (const etudiant of etudiants) {
+        const matriculeEtudiant = etudiant.matricule || ""; // Assurez-vous que le champ matricule existe
+        if (matriculeEtudiant === matriculeRecherche) {
+          $("#nom").text(etudiant.nom);
+          $("#prenom").text(etudiant.prenom);
+          $("#matricule").text(etudiant.matricule);
+          $("#ecoleOrigine").text(etudiant.ecoleOrigine);
+          $("#dateNaissance").text(etudiant.dateNaissance);
+          $("#lieuNaissance").text(etudiant.lieuNaissance);
+          $("#telephone").text(etudiant.telephone);
+          $("#email").text(etudiant.email);
+          $("#regionOrigine").text(etudiant.regionOrigine);
+          $("#sexe").text(etudiant.sexe);
+          $("#cycle").text(etudiant.classe.specialite.filiere.libelle);
+          $("#niveau").text(etudiant.classe.niveau.libelle);
+          $("#specialite").text(etudiant.classe.specialite.filiere.libelle);
+          $("#statut").text(etudiant.statut);
+          $("#nomDuPere").text(etudiant.nomDuPere);
+          $("#telephoneDuPere").text(etudiant.telephoneDuPere);
+          $("#nomDeLaMere").text(etudiant.nomDeLaMere);
+          $("#telephoneDeLaMere").text(etudiant.telephoneDeLaMere);
+        }
+      }
+      return null; // Aucun étudiant trouvé avec le matricule donné
+    }
+
+    // Function to display pagination links
+    function displayPagination(data) {
+      const totalPages = Math.ceil(data.length / itemsPerPage);
+      const paginationContainer = $('#pagination-container');
+      paginationContainer.empty();
+
+      for (let i = 1; i <= totalPages; i++) {
+        const pageLink = $(`<a href="#" class="mx-2">${i}</a>`);
+
+        pageLink.click(function (event) {
+          event.preventDefault();
+          currentPage = i;
+          displayUsers(data);
+        });
+
+        paginationContainer.append(pageLink);
+      }
+    }
+
+    $(document).ready(function () {
+      $.ajax({
+        url: 'http://localhost:9000/api/gest-note/api/enseignant/all',
+        type: 'GET',
+        crossDomain: true,
+        dataType: 'json',
+        success: function (response) {
+          // Traitement de la réponse réussie
+          // console.log("enseignants : ", response);
+        },
+        error: function (xhr, status, error) {
+          // Traitement des erreurs
+          console.error('Une erreur est survenue lors de la requête:', status, error);
+        }
+      });
+
+      $.ajax({
+        url: 'http://localhost:9000/api/gest-note/api/etudiant/all',
+        type: 'GET',
+        crossDomain: true,
+        dataType: 'json',
+        success: function (response) {
+          // Traitement de la réponse réussie
+          etudiants = response;
+          populateNiveauEtude(etudiants);
+          populateSpecialiteEtude(etudiants);
+          populateCycleEtude(etudiants);
+
+
+          displayUsers(etudiants);
+
+          // Initialize twbs-pagination
+          $('#pagination-container').twbsPagination({
+            totalPages: Math.ceil(etudiants.length / itemsPerPage),
+            visiblePages: 5,
+            onPageClick: function (event, page) {
+              currentPage = page;
+              displayUsers(etudiants);
+            }
+          });
+
+          console.log("niveaux : ", etudiants);
+        },
+        error: function (xhr, status, error) {
+          // Traitement des erreurs
+          console.error('Une erreur est survenue lors de la requête:', status, error);
+        }
+      });
+    });
+
+
+    function updateCycle() {
+      const selectedNiveau = document.getElementById('niveau-etude-class').value;
+      const selectedSpecialite = document.getElementById('specialite-class').value;
+      const selectedCycle = document.getElementById('cycle-class').value;
+      const selectedSexe = document.getElementById('section-sexe-class').value;
+
+      console.log(selectedNiveau, selectedSpecialite, selectedCycle, selectedSexe);
+
+      // Filter students based on selected filters
+      const filteredStudents = etudiants.filter(student => {
+        const niveauMatch = selectedNiveau === '*' || student.classe.niveau.libelle === selectedNiveau;
+        const specialiteMatch = selectedSpecialite === '*' || student.classe.specialite.libelle === selectedSpecialite;
+        const cycleMatch = selectedCycle === '*' || student.classe.specialite.filiere.libelle === selectedCycle;
+        const sexeMatch = selectedSexe === '*' || student.sexe === selectedSexe;
+
+        return niveauMatch && specialiteMatch && cycleMatch && sexeMatch;
+      });
+
+      // Display the filtered students
+      displayUsers(filteredStudents);
+
+      // Initialize twbs-pagination
+
+
+      var newPaginationContainer = $('<div>');
+      // Initialiser twbsPagination sur le nouvel élément
+      newPaginationContainer.twbsPagination({
+        totalPages: Math.ceil(filteredStudents.length / itemsPerPage),
+        visiblePages: 5,
+        onPageClick: function (event, page) {
+          currentPage = page;
+          displayUsers(filteredStudents);
+        }
+      });
+
+      // Remplacer l'ancien contenu de #pagination-container par le nouvel élément
+      $('#pagination-container').html(newPaginationContainer);
+    }
+
+
+
+
+    function updateNiveauEtude() {
+      const selectedNiveau = document.getElementById('niveau-etude-class').value;
+      const selectedSpecialite = document.getElementById('specialite-class').value;
+      const selectedCycle = document.getElementById('cycle-class').value;
+      const selectedSexe = document.getElementById('section-sexe-class').value;
+
+      console.log(selectedNiveau, selectedSpecialite, selectedCycle, selectedSexe);
+
+      // Filter students based on selected filters
+      const filteredStudents = etudiants.filter(student => {
+        const niveauMatch = selectedNiveau === '*' || student.classe.niveau.libelle === selectedNiveau;
+        const specialiteMatch = selectedSpecialite === '*' || student.classe.specialite.libelle === selectedSpecialite;
+        const cycleMatch = selectedCycle === '*' || student.classe.specialite.filiere.libelle === selectedCycle;
+        const sexeMatch = selectedSexe === '*' || student.sexe === selectedCycle;
+
+        return niveauMatch && specialiteMatch && cycleMatch && sexeMatch;
+      });
+
+      // Display the filtered students
+      displayUsers(filteredStudents);
+
+      // Initialize twbs-pagination
+
+
+      var newPaginationContainer = $('<div>');
+      // Initialiser twbsPagination sur le nouvel élément
+      newPaginationContainer.twbsPagination({
+        totalPages: Math.ceil(filteredStudents.length / itemsPerPage),
+        visiblePages: 5,
+        onPageClick: function (event, page) {
+          currentPage = page;
+          displayUsers(filteredStudents);
+        }
+      });
+
+      // Remplacer l'ancien contenu de #pagination-container par le nouvel élément
+      $('#pagination-container').html(newPaginationContainer);
+    }
+
+
+
+
+
+    function updateSpecialite() {
+      const selectedNiveau = document.getElementById('niveau-etude-class').value;
+      const selectedSpecialite = document.getElementById('specialite-class').value;
+      const selectedCycle = document.getElementById('cycle-class').value;
+      const selectedSexe = document.getElementById('section-sexe-class').value;
+
+      console.log(selectedNiveau, selectedSpecialite, selectedCycle, selectedSexe);
+
+      // Filter students based on selected filters
+      const filteredStudents = etudiants.filter(student => {
+        const niveauMatch = selectedNiveau === '*' || student.classe.niveau.libelle === selectedNiveau;
+        const specialiteMatch = selectedSpecialite === '*' || student.classe.specialite.libelle === selectedSpecialite;
+        const cycleMatch = selectedCycle === '*' || student.classe.specialite.filiere.libelle === selectedCycle;
+        const sexeMatch = selectedSexe === '*' || student.sexe === selectedCycle;
+
+        return niveauMatch && specialiteMatch && cycleMatch && sexeMatch;
+      });
+
+      // Display the filtered students
+      displayUsers(filteredStudents);
+
+      // Initialize twbs-pagination
+
+
+      var newPaginationContainer = $('<div>');
+      // Initialiser twbsPagination sur le nouvel élément
+      newPaginationContainer.twbsPagination({
+        totalPages: Math.ceil(filteredStudents.length / itemsPerPage),
+        visiblePages: 5,
+        onPageClick: function (event, page) {
+          currentPage = page;
+          displayUsers(filteredStudents);
+        }
+      });
+
+      // Remplacer l'ancien contenu de #pagination-container par le nouvel élément
+      $('#pagination-container').html(newPaginationContainer);
+    }
+
+
+    
+    function updateSexe() {
+      const selectedNiveau = document.getElementById('niveau-etude-class').value;
+      const selectedSpecialite = document.getElementById('specialite-class').value;
+      const selectedCycle = document.getElementById('cycle-class').value;
+      const selectedSexe = document.getElementById('section-sexe-class').value;
+
+      console.log(selectedNiveau, selectedSpecialite, selectedCycle, selectedSexe);
+
+      // Filter students based on selected filters
+      const filteredStudents = etudiants.filter(student => {
+        const niveauMatch = selectedNiveau === '*' || student.classe.niveau.libelle === selectedNiveau;
+        const specialiteMatch = selectedSpecialite === '*' || student.classe.specialite.libelle === selectedSpecialite;
+        const cycleMatch = selectedCycle === '*' || student.classe.specialite.filiere.libelle === selectedCycle;
+        const sexeMatch = selectedSexe === '*' || student.sexe === selectedCycle;
+
+        return niveauMatch && specialiteMatch && cycleMatch && sexeMatch;
+      });
+
+      // Display the filtered students
+      displayUsers(filteredStudents);
+
+        var newPaginationContainer = $('<div>');
+        // Initialiser twbsPagination sur le nouvel élément
+        newPaginationContainer.twbsPagination({
+            totalPages: Math.ceil(filteredStudents.length / itemsPerPage),
+            visiblePages: 5,
+            onPageClick: function (event, page) {
+                currentPage = page;
+                displayUsers(filteredStudents);
+            }
+        });
+
+        // Remplacer l'ancien contenu de #pagination-container par le nouvel élément
+        $('#pagination-container').html(newPaginationContainer);
+    }
+
+
+
+
+    function filterData(filterText, property) {
+      var filterTextLower = filterText.toLowerCase();
+
+      // Filtrer les données en fonction du texte de filtre et de la propriété spécifiée
+      var filteredData = etudiants.filter(function (item) {
+        return item[property].toLowerCase().includes(filterTextLower);
+      });
+
+
+      console.log("Nom : ", filteredData);
+
+      // Récupérer les valeurs des filtres sélectionnés
+      var selectedNiveau = $('#niveau-etude-class').val();
+      var selectedSpecialite = $('#specialite-class').val();
+      var selectedCycle = $('#cycle-class').val();
+      var selectedSexe = $('#section-sexe-class').val();
+
+      console.log(selectedNiveau, selectedSpecialite, selectedCycle, selectedSexe);
+
+      // Filtrer les étudiants en fonction des filtres sélectionnés
+      var filteredStudents = filteredData.filter(function (student) {
+        var niveauMatch = selectedNiveau === '*' || student.classe.niveau.libelle === selectedNiveau;
+        var specialiteMatch = selectedSpecialite === '*' || student.classe.specialite.libelle === selectedSpecialite;
+        var cycleMatch = selectedCycle === '*' || student.classe.specialite.filiere.libelle === selectedCycle;
+        var sexeMatch = selectedSexe === '*' || student.sexe === selectedSexe;
+
+        return niveauMatch && specialiteMatch && cycleMatch && sexeMatch;
+      });
+
+      // Afficher les étudiants filtrés
+      displayUsers(filteredStudents);
+
+      var newPaginationContainer = $('<div>');
+      // Initialiser twbsPagination sur le nouvel élément
+      newPaginationContainer.twbsPagination({
+        totalPages: Math.ceil(filteredStudents.length / itemsPerPage),
+        visiblePages: 5,
+        onPageClick: function (event, page) {
+          currentPage = page;
+          displayUsers(filteredStudents);
+        }
+      });
+
+      // Remplacer l'ancien contenu de #pagination-container par le nouvel élément
+      $('#pagination-container').html(newPaginationContainer);
+    }
+    $('#nom-class').on('input', function () {
+      filterData($(this).val(), 'nom');
+    });
+
+    // Utilisation de la méthode 'on' pour l'événement d'entrée pour le champ prénom
+    $('#prenom-class').on('input', function () {
+      filterData($(this).val(), 'prenom');
+    });
+
+
+
+
+
+
+    // Function to update pagination based on the filtered data
+    function updatePagination(filteredStudents) {
+      const totalPages = Math.ceil(filteredStudents.length / itemsPerPage);
+      const paginationContainer = $('#pagination-container');
+
+      // Destroy the existing pagination (if any)
+      paginationContainer.twbsPagination('destroy');
+
+      paginationContainer.twbsPagination({
+        totalPages: totalPages,
+        visiblePages: Math.min(totalPages, 5),
+        onPageClick: function (event, page) {
+          currentPage = page;
+          displayUsers(filteredStudents);
+        }
+      });
+    }
+
+    function populateNiveauEtude(etudiants) {
+      const uniqueNiveaux = Array.from(new Set(etudiants.map(item => item.classe.niveau.libelle))).sort();
+      const selectElement = document.getElementById('niveau-etude-class');
+
+      // Populate the select element with unique values
+      uniqueNiveaux.forEach(niveau => {
+        const option = document.createElement('option');
+        option.value = niveau;
+        option.textContent = niveau;
+        selectElement.appendChild(option);
+      });
+    }
+
+    function populateSpecialiteEtude(etudiants) {
+      const unique = Array.from(new Set(etudiants.map(item => item.classe.specialite.libelle))).sort();
+      const selectElement = document.getElementById('specialite-class');
+
+      // Populate the select element with unique values
+      unique.forEach(niveau => {
+        const option = document.createElement('option');
+        option.value = niveau;
+        option.textContent = niveau;
+        selectElement.appendChild(option);
+      });
+    }
+
+    function populateCycleEtude(etudiants) {
+      const unique = Array.from(new Set(etudiants.map(item => item.classe.specialite.filiere.libelle))).sort();
+      const selectElement = document.getElementById('cycle-class');
+
+      // Populate the select element with unique values
+      unique.forEach(niveau => {
+        const option = document.createElement('option');
+        option.value = niveau;
+        option.textContent = niveau;
+        selectElement.appendChild(option);
+      });
+    }
+  </script>
+
+
+  <script>
+    function updatePopulation() {
+      var population = $('#population-class').val();
+      var nom_label = $('#nom-utilisateur');
+      var prenom_label = $('#prenom-utilisateur');
+      var titre_search = $('#title_label');
+
+      if (population === 'Etudiant') {
+        nom_label.text("Nom Etudiant");
+        prenom_label.text("Prénom Etudiant");
+        titre_search.text("Filtrez les informations des Etudiants");
+
+        $('#etudiant-filter').removeClass("d-none");
+        $('#personnel-filter').addClass("d-none");
+
+      } else if (population == 'Personnel') {
+        nom_label.text("Nom Personnel");
+        prenom_label.text("Prénom Personnel");
+        titre_search.text("Filtrez les informations du Personnel");
+
+
+        $('#etudiant-filter').addClass("d-none");
+        $('#personnel-filter').removeClass("d-none");
+      }
+      else if (population == 'Enseignant') {
+        nom_label.text("Nom Enseignant");
+        prenom_label.text("Prénom Enseignant");
+        titre_search.text("Filtrez les informations des Enseignants");
+
+        $('#etudiant-filter').addClass("d-none");
+        $('#personnel-filter').addClass("d-none");
+      }
+      else {
+        nom_label.text("Nom Utilisateur");
+        prenom_label.text("Prénom Utilisateur");
+        titre_search.text("Filtrez les informations des Utilisateurs");
+
+        $('#etudiant-filter').addClass("d-none");
+        $('#personnel-filter').addClass("d-none");
+      }
+    }
+
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  </script>
+</body>
+
+</html>

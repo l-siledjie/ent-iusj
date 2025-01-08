@@ -1,0 +1,209 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:fragment="modalsIntervention">
+  <style>
+    /* Custom CSS to change the color of the close icon to white */
+    .btn-close {
+      color: white;
+    }
+  </style>
+
+
+  <div class="modal fade" id="demanderinterventionModal" tabindex="-1" aria-labelledby="demande-interventionModal"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary fw-bold text-white">
+          <h5 class="modal-title" id="modal-title">Nouvelle Demande D'Intervention</h5>
+          <button type="button" class="btn btn-link fw-bold" style="color: white;" data-dismiss="modal"
+            aria-label="Close">X</button>
+        </div>
+        <input type="text" class="d-none" id="matricule" th:value="${session.matricule}" readonly />
+        <div class="modal-body">
+          <!--          th:action="@{/creerIntervention}" th:method="post" th:object="${intervention}"-->
+          <form class=" form-sample row justify-content-center gap-3">
+            <div class="form-group">
+              <label for="intervention" class="form-label">Choisissez une intervention</label>
+              <select name="level" id="intervention" class="form-select">
+                <option disabled selected value=" ">Selectionnez une intervention</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="sous-intervention" class="form-label">Choisissez une sous-intervention</label>
+              <select name="level" id="sous-intervention" class="form-select">
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="exampleInputUsername1" class="form-label">Entrer une description</label>
+              <input type="text-area" class="form-control" id="exampleInputUsername1" placeholder="Description">
+            </div>
+
+            <label id="download" class="form-group custom-file-upload">
+              <input type="file" id="file" multiple accept=".pdf" /> <i class="ti-download"></i>
+              Charger de(s) PieceJointe(s)
+            </label>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-light" data-dismiss="modal" aria-label="Close">Fermer</button>
+          <button type="button" id="envoyer" class="btn btn-primary">Envoyer</button>
+          <!-- <a th:href="@{listeIntervention}">
+            
+          </a> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Fin Modal demande d'intervention -->
+
+
+
+
+
+  <div class="modal fade" id="interventionDetailsModal" tabindex="-1" aria-labelledby="details-interventionModal"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary fw-bold text-white">
+          <h5 class="modal-title" id="modal-title">Details de l'intervention</h5>
+          <button type="button" class="btn-close text-white" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Numero intervention :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalIntervention"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Objet Demande :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalObjet"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Matricule etudiant :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalMatriculeEtudiant"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Nom(s) etudiant :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalNomEtudiant"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Departement :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalDepartement"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Categorie :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalCategorie"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Date D'envoi :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalDateEnvoie"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Statut Demande :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalStatutDemande"></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-5">Piece jointe :</div>
+              <div class="col-md-7">
+                <span class="float-end" id="modalPieceJointe">
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col-md-4">Responsable :</div>
+              <div class="col-md-8">
+                <span class="float-end" id="modalResponsableTraitement"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div><!-- Fin Modal demande d'intervention -->
+
+  <!--Fait-->
+</th:block>
+
+<th:block th:fragment="modalsValidationIntervention">
+
+  <div class="modal fade" id="terminerInterventionModal" tabindex="-1" aria-labelledby="terminer-interventionModal"
+    aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary fw-bold text-white">
+          <h5 class="modal-title" id="modal-title">Terminer cette intervention</h5>
+          <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input type="text" name="" class="form-control d-none" id="id-finalize-int">
+            <label for="float-input" style="font-weight: 800; color: black;">Commentaire</label>
+            <textarea class="form-control" style="width: 100%;min-height: 300px" rows="3" formControlName="mail"
+              id="float-input" placeholder="Entrez un petit message...."></textarea>
+          </div>
+          <label id="downloads" class="form-group custom-file-upload">
+            <input type="file" id="files" multiple onchange="loadFileS(event)" formControlName="files" />
+            <i class="bi bi-download"></i>
+            Ajouter des PieceJointes
+          </label>
+
+          <label class="custom-send-reponse" onclick="envoyerR()">
+            <i class="bi bi-send"></i>
+            Envoyer
+          </label>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!--Fait-->
+</th:block>
+
+
+</html>

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en" html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gestion des Interventions</title>
+    <!-- plugins:css -->
+    <link rel="stylesheet" type="text/css" th:href="@{/css/gIntervention.css}">
+    <link rel="stylesheet" href="/vendors/feather/feather.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link href="/vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendors/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="/vendors/datatables.net-bs4/dataTables.bootstrap4.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" type="/text/css" href="js/select.dataTables.min.css">
+    <!-- End plugin css for this page -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="/vendors/select2/select2.min.css">
+    <link rel="stylesheet" href="/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/css/vertical-layout-light/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="/images/favicon.png" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/gInterventionResp.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/sweetalert2/sweetalert2.css}">
+
+    <!-- Required meta tags -->
+    <th:block th:replace="fragments/_head.html::head"></th:block>
+</head>
+
+<div class="container-scroller">
+
+    <!--_header-->
+    <th:block th:replace="/fragments/_header.html::header"></th:block>
+
+    <!-- partial -->
+    <div class="container-fluid page-body-wrapper">
+        <!-- partial:/partials/_settings-panel.html -->
+        <div class="theme-setting-wrapper">
+            <div id="settings-trigger"><i class="ti-settings"></i></div>
+            <div id="theme-settings" class="settings-panel">
+                <i class="settings-close ti-close"></i>
+                <p class="settings-heading">SIDEBAR SKINS</p>
+                <div class="sidebar-bg-options selected" id="sidebar-light-theme">
+                    <div class="img-ss rounded-circle bg-light border mr-3"></div>Light
+                </div>
+                <div class="sidebar-bg-options" id="sidebar-dark-theme">
+                    <div class="img-ss rounded-circle bg-dark border mr-3"></div>Dark
+                </div>
+                <p class="settings-heading mt-2">HEADER SKINS</p>
+                <div class="color-tiles mx-0 px-4">
+                    <div class="tiles success"></div>
+                    <div class="tiles warning"></div>
+                    <div class="tiles danger"></div>
+                    <div class="tiles info"></div>
+                    <div class="tiles dark"></div>
+                    <div class="tiles default"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- partial -->
+        <!-- partial:partials/_sidebar.html -->
+        <th:block th:replace="/fragments/_navGestInt.html::navGestInt"></th:block>
+
+        <!-- partial -->
+        <div class="main-panel">
+            <div class="content-wrapper">
+                <div class="row">
+                    <div class="col-lg-12 grid-margin stretch-card">
+                        <div class="card">
+                            <input type="text" class="d-none" id="matricule" th:value="${session.matricule}">
+                            <div class="card-body">
+                                <h4 th:if="${session.authorithies[0].authority =='User' }" class="card-title">Mes
+                                    Interventions</h4>
+                                <h4 th:if="${session.authorithies[0].authority =='Admin' }" class="card-title">
+                                    Interventions Par Departement</h4>
+                                <p class="card-description">
+                                </p>
+                                <div class="table-responsive">
+                                    <table id="table_id" class="table table-hover table-striped table-bordered">
+                                        <thead class="bg-primary text-white fw-bold">
+                                            <tr>
+                                                <th th:if="${session.authorithies[0].authority == 'Admin' }"> Etudiant
+                                                </th>
+
+                                                <th class="col-md-1">Departement</th>
+                                                <th class="col-md-1">Date Envoi</th>
+
+                                                <th th:if="${session.authorithies[0].authority == 'Admin' }"> Objet
+                                                </th>
+                                                <th>Description</th>
+                                                <th class="col-md-1">pieceJointes</th>
+                                                <th class="col-md-1">Statut</th>
+                                                <th class="col-md-2">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr th:each="interventions : ${interventions}">
+                                                <td th:if="${session.authorithies[0].authority == 'Admin' }">
+                                                    <span th:text="${interventions.etudiant.matricule}"></span>
+                                                </td>
+                                                <td th:text="${interventions.departement.intituleDepartement}"></td>
+                                                <td
+                                                    th:text="${#dates.format(interventions.dateCreationInter, 'dd-MM-yyyy HH:mm:ss')}">
+                                                </td>
+                                                <td th:if="${session.authorithies[0].authority == 'Admin' }"> <span
+                                                        th:text="${interventions.categorie.intituleCategorie}"></span>
+                                                </td>
+                                                <td th:text="${interventions.description}"></td>
+                                                <td>
+                                                    <a th:each="piecesJointe : ${interventions.piecesJointes}"
+                                                        th:href="@{/download/{idPieceJ}(idPieceJ=${piecesJointe.idPieceJointe})}"><i
+                                                            class="bi bi-file-earmark-binary-fill"></i></a>
+
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-danger"
+                                                        th:if="${interventions.statut == 'rejeter'}"
+                                                        th:text="${interventions.statut}">Danger</span>
+
+                                                    <span class="badge badge-warning"
+                                                        th:if="${interventions.statut == 'nonTraite'}"
+                                                        th:text="${interventions.statut}">Warning</span>
+
+                                                    <span class="badge badge-success"
+                                                        th:if="${interventions.statut == 'traite'}"
+                                                        th:text="${interventions.statut}">Success</span>
+
+                                                    <span class="badge badge-primary"
+                                                        th:if="${interventions.statut == 'enCours'}"
+                                                        th:text="${interventions.statut}">Primary</span>
+                                                    <i th:if="${interventions.statut != 'nonTraite' && session.authorithies[0].authority == 'Admin' && interventions.personnel.idPersonnel == matricule}"
+                                                        class="bi bi-emoji-grin"></i>
+
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                                                        <span data-toggle="modal"
+                                                            data-target="#interventionDetailsModal">
+                                                            <button type="button" class="btn bi bi-eye-fill"
+                                                                data-toggle="tooltip" data-placement="top"
+                                                                th:attr="onclick=|showInterventionDetail('${interventions.idIntervention}')|"
+                                                                data-original-title="Consulter les détails de cette l'intervention.">
+                                                            </button>
+                                                        </span>
+
+                                                        <button type="button"
+                                                            th:if="${interventions.statut == 'nonTraite' && session.authorithies[0].authority =='Admin' && !interventions.canceled}"
+                                                            class="btn bi bi-x-circle-fill text-danger"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            th:attr="onclick=|cancelInterventionRequest('${interventions.idIntervention}')|"
+                                                            data-original-title="Rejeter cette demande d'intervention.">
+                                                        </button>
+
+                                                        <button type="button"
+                                                            th:if="${interventions.statut == 'nonTraite' && session.authorithies[0].authority =='Admin'}"
+                                                            class="btn bi bi-plus-circle-fill text-primary"
+                                                            data-toggle="tooltip" data-placement="top"
+                                                            th:attr="onclick=|prendreChargeInterventionRequest('${interventions.idIntervention}', '${session.matricule}')|"
+                                                            data-original-title="Prendre en charge cette demande d'intervention.">
+                                                        </button>
+
+                                                        <span data-toggle="modal"
+                                                            th:if="${interventions.statut == 'enCours' && session.authorithies[0].authority =='Admin'}"
+                                                            data-target="#terminerInterventionModal">
+                                                            <button type="button"
+                                                                class="btn bi bi-check-circle-fill text-success"
+                                                                data-toggle="tooltip" data-placement="top"
+                                                                th:attr="onclick=|finalisation('${interventions.idIntervention}')|"
+                                                                data-original-title="Finaliser cette demande d'intervention.">
+                                                            </button>
+                                                        </span>
+
+                                                    </div>
+
+
+
+
+                                                    <!-- <button type="button" class="btn btn-primary bi bi-eye-fill" href="#" data-toggle="modal" data-target="#terminerInterventionModal"></button>
+                                                    <a th:href="@{/cancel/{idIntervention}(idIntervention=${interventions.idIntervention})}"
+                                                        th:if="${interventions.statut == 'nonTraite' && session.authorithies[0].authority =='User' &&  !interventions.canceled}">
+                                                        <button type="button"
+                                                            class="btn btn-danger bi bi-x-lg"></button>
+                                                    </a>
+
+                                                    <a th:if="${interventions.statut == 'nonTraite' && session.authorithies[0].authority =='Admin' && !interventions.canceled}"
+                                                        th:href="@{/prendreEnCharge/{idIntervention}(idIntervention=${interventions.idIntervention})}">
+                                                        <button type="button"
+                                                            class="btn btn-success bi bi-check-lg"></button>
+                                                    </a>
+                                                    <a th:if="${interventions.canceled}">
+                                                        <button type="button"
+                                                            class="btn btn-outline-danger bi bi-x-circle"></button>
+                                                    </a>
+                                                    <button
+                                                        th:if="${interventions.statut == 'enCours' && session.authorithies[0].authority =='Admin'}"
+                                                        th:data-id="${interventions.idIntervention}"
+                                                        onclick="showAlert(this)" data-toggle="modal"
+                                                        data-target="#terminerInterventionModal" type="button"
+                                                        class="btn btn-secondary bi bi-chat-square"></button> -->
+
+
+                                                    <!--                              th:href="@{/terminer/{idIntervention}(idIntervention=${interventions.idIntervention})}"-->
+                                                </td>
+
+
+
+                                                <div class="modal fade" id="interventionDetailsModal" tabindex="-1"
+                                                    aria-labelledby="details-interventionModal" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header bg-primary fw-bold text-white">
+                                                                <h5 class="modal-title" id="modal-title">Details de
+                                                                    l'intervention</h5>
+                                                                <button type="button" class="btn-close text-white"
+                                                                    data-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Numero intervention :
+                                                                        </div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalIntervention"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Objet Demande :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalObjet"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Matricule etudiant :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalMatriculeEtudiant"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Nom(s) etudiant :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalNomEtudiant"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Departement :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalDepartement"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Categorie :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalCategorie"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Date D'envoi :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalDateEnvoie"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Statut Demande :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end"
+                                                                                id="modalStatutDemande"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-5">Piece jointe :</div>
+                                                                        <div class="col-md-7">
+                                                                            <span class="float-end">
+                                                                                <th:block
+                                                                                    th:if="${interventions.piecesJointes != null and not #lists.isEmpty(interventions.piecesJointes)}">
+                                                                                    <!-- Afficher un lien pour chaque pièce jointe -->
+                                                                                    <th:block
+                                                                                        th:each="pieceJointe : ${interventions.piecesJointes}">
+                                                                                        <a data-toggle="tooltip"
+                                                                                            data-placement="top"
+                                                                                            data-original-title="Piece jointe rattachee a la demande."
+                                                                                            th:href="@{/download/{idPieceJ}(idPieceJ=${pieceJointe.idPieceJointe})}">
+                                                                                            <i
+                                                                                                class="bi bi-file-earmark-binary-fill"></i>
+                                                                                        </a>
+                                                                                    </th:block>
+                                                                                </th:block>
+                                                                                <th:block
+                                                                                    th:if="${interventions.piecesJointes == null}">
+                                                                                    <!-- Si aucune pièce jointe n'existe, afficher ce message -->
+                                                                                    Aucune pièce jointe
+                                                                                </th:block>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4">Responsable :</div>
+                                                                        <div class="col-md-8">
+                                                                            <span class="float-end"
+                                                                                id="modalResponsableTraitement"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4">Date Modif :</div>
+                                                                        <div class="col-md-8">
+                                                                            <span class="float-end"
+                                                                                id="modalDateModif"></span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="form-group">
+                                                                    <div class="row">
+                                                                        <div class="col-md-4">Description :</div>
+                                                                        <div class="col-md-12">
+                                                                            <textarea name="modalDescription"
+                                                                                id="modalDescription" cols="30" rows="3"
+                                                                                readonly
+                                                                                class="form-control bg-white text-dark"></textarea>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="container-fluid mx-auto p-3">
+                                                                    <hr>
+                                                                    <center>
+                                                                        <button type="button"
+                                                                            th:if="${interventions.statut == 'nonTraite' && session.authorithies[0].authority =='Admin' && !interventions.canceled}"
+                                                                            class="btn btn-danger col-md-3 rounded"
+                                                                            data-toggle="tooltip" data-placement="top"
+                                                                            th:attr="onclick=|cancelInterventionRequest('${interventions.idIntervention}')|"
+                                                                            data-original-title="Rejeter cette demande d'intervention.">
+                                                                            Rejetter
+                                                                        </button>
+                                                                        <button type="button"
+                                                                            th:if="${interventions.statut == 'nonTraite' && session.authorithies[0].authority =='Admin'}"
+                                                                            class="btn btn-primary col-md-5 rounded"
+                                                                            data-toggle="tooltip" data-placement="top"
+                                                                            th:attr="onclick=|prendreChargeInterventionRequest('${interventions.idIntervention}', '${session.matricule}')|"
+                                                                            data-original-title="Prendre en charge cette demande d'intervention.">
+                                                                            Prendre En Charge
+                                                                        </button>
+
+                                                                        <span data-toggle="modal"
+                                                                            th:if="${interventions.statut == 'enCours' && session.authorithies[0].authority =='Admin'}"
+                                                                            data-target="#terminerInterventionModal">
+                                                                            <button type="button"
+                                                                                class="btn btn-success col-md-3 rounded"
+                                                                                data-toggle="tooltip"
+                                                                                data-placement="top"
+                                                                                th:attr="onclick=|finalisation('${interventions.idIntervention}')|"
+                                                                                data-original-title="Finaliser cette demande d'intervention.">
+                                                                                Finaliser
+                                                                            </button>
+                                                                        </span>
+                                                                    </center>
+                                                                </div>
+                                                            </div>
+
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- content-wrapper ends -->
+            <!-- partial:/partials/_footer.html -->
+            <footer class="footer">
+                <div class="d-sm-flex justify-content-center justify-content-sm-between">
+                    <span class="text-muted text-center text-sm-left d-block d-sm-inline-block">Copyright © 2022. Client
+                        Web ING4-ISI <a href="https://www.institutsaintjean.org/" target="_blank">ISJ-ENT.</a> All
+                        rights reserved.</span>
+                    <span class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">Hand-crafted & made with <i
+                            class="ti-heart text-danger ml-1"></i></span>
+                </div>
+            </footer>
+            <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+
+    <th:block th:replace="fragments/_modalsIntervention.html::modalsIntervention"></th:block>
+    <th:block th:replace="fragments/_modalsIntervention.html::modalsValidationIntervention"></th:block>
+
+</div>
+<!-- container-scroller -->
+<!-- plugins:js -->
+<script type="text/javascript" th:src="@{/js/moreIntervention.js}"></script>
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<!-- End plugin js for this page -->
+<!-- inject:js -->
+<script th:inline="javascript">
+    var token = /*[[${accessToken}]]*/ 'valeur_par_defaut';
+</script>
+<script src="/js/creerIntervention.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/hoverable-collapse.js"></script>
+<script src="/js/template.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<script th:src="@{/sweetalert2/sweetalert2.all.js}"></script>
+<script th:src="@{/sweetalert2/sweetalert2.js}"></script>
+
+
+
+<!-- endinject -->
+<!-- Custom js for this page-->
+<!-- End custom js for this page-->
+
+
+
+<!-- plugins:js -->
+<!-- endinject -->
+<!-- Plugin js for this page -->
+<!-- <script src="/scripting/jquery-3.6.4.min.js"></script> -->
+<script src="/vendors/chart.js/Chart.min.js"></script>
+<script src="/vendors/datatables.net/jquery.dataTables.js"></script>
+<script src="/vendors/datatables.net-bs4/dataTables.bootstrap4.js"></script>
+<script src="js/dataTables.select.min.js"></script>
+
+<!-- Plugin js for this page -->
+<script src="/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+<script src="/vendors/select2/select2.min.js"></script>
+<!-- End plugin js for this page -->
+
+<!-- endinject -->
+<!-- Custom js for this page-->
+<script src="/js/dashboard.js"></script>
+<script src="/js/Chart.roundedBarCharts.js"></script>
+
+<!-- Custom js for this page-->
+<script src="/js/file-upload.js"></script>
+<script src="/js/typeahead.js"></script>
+<script src="/js/select2.js"></script>
+<script src="/scripting/intervention.js"></script>
+<!-- End custom js for this page-->
+
+
+<script>
+    function capitalizeFirstLetter(str) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+</script>
+
+
+</body>
+
+</html>
